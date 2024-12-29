@@ -1,3 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+
+DotNetEnv.Env.Load();
+var host = Environment.GetEnvironmentVariable("DB_HOST") 
+            ?? throw new InvalidOperationException("DB_HOST is not set in the environment variables.");
+            
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

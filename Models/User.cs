@@ -10,22 +10,33 @@ namespace spendo_be.Models;
 public partial class User
 {
     [Key]
+    [Column("id")]
     public int Id { get; set; }
 
+    [Column("name")]
     [StringLength(255)]
     public string Name { get; set; } = null!;
 
+    [Column("email")]
     [StringLength(255)]
     public string Email { get; set; } = null!;
 
-    [StringLength(255)]
-    public string? Password { get; set; }
+    [Column("createdat", TypeName = "timestamp without time zone")]
+    public DateTime Createdat { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedAt { get; set; }
+    [Column("updatedat", TypeName = "timestamp without time zone")]
+    public DateTime Updatedat { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime UpdatedAt { get; set; }
+    [Column("currencyid")]
+    public int Currencyid { get; set; }
 
-    public int CurrencyId { get; set; }
+    [InverseProperty("User")]
+    public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<Budget> Budgets { get; set; } = new List<Budget>();
+
+    [ForeignKey("Currencyid")]
+    [InverseProperty("Users")]
+    public virtual Currency Currency { get; set; } = null!;
 }

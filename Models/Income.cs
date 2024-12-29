@@ -10,23 +10,37 @@ namespace spendo_be.Models;
 public partial class Income
 {
     [Key]
+    [Column("id")]
     public int Id { get; set; }
 
+    [Column("title")]
     [StringLength(50)]
     public string? Title { get; set; }
 
+    [Column("description")]
     [StringLength(255)]
     public string? Description { get; set; }
 
+    [Column("amount")]
     public decimal Amount { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedAt { get; set; }
+    [Column("createdat", TypeName = "timestamp without time zone")]
+    public DateTime Createdat { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime UpdatedAt { get; set; }
+    [Column("updatedat", TypeName = "timestamp without time zone")]
+    public DateTime Updatedat { get; set; }
 
-    public int AccountId { get; set; }
+    [Column("accountid")]
+    public int Accountid { get; set; }
 
-    public int? CategoryId { get; set; }
+    [Column("categoryid")]
+    public int? Categoryid { get; set; }
+
+    [ForeignKey("Accountid")]
+    [InverseProperty("Incomes")]
+    public virtual Account Account { get; set; } = null!;
+
+    [ForeignKey("Categoryid")]
+    [InverseProperty("Incomes")]
+    public virtual Category? Category { get; set; }
 }
