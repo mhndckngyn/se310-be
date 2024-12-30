@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using spendo_be.Models;
+using spendo_be.Models.DTO;
 using spendo_be.Services;
 
 namespace spendo_be.Controllers;

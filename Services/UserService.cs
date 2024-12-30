@@ -1,6 +1,7 @@
 using spendo_be.Context;
 using spendo_be.Controllers;
 using spendo_be.Models;
+using spendo_be.Models.DTO;
 
 namespace spendo_be.Services;
 

@@ -1,4 +1,4 @@
-namespace spendo_be.Controllers;
+namespace spendo_be.Models.DTO;
 
 public record UserDto
 {
