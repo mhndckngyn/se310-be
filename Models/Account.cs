@@ -24,7 +24,7 @@ public partial class Account
     public DateTime Createdat { get; set; }
 
     [Column("updatedat", TypeName = "timestamp without time zone")]
-    public DateTime? Updatedat { get; set; }
+    public DateTime Updatedat { get; set; }
 
     [Column("userid")]
     public int Userid { get; set; }

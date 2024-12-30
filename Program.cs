@@ -5,8 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using spendo_be.Services.Extensions;
 
 DotNetEnv.Env.Load();
-var _ = Environment.GetEnvironmentVariable("DB_HOST") 
-            ?? throw new InvalidOperationException("Database info is not set in the environment variables.");
+_ = Environment.GetEnvironmentVariable("DB_HOST") 
+    ?? throw new InvalidOperationException("Database info is not set in the environment variables.");
             
 var builder = WebApplication.CreateBuilder(args);
 
