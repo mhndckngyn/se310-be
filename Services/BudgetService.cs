@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using spendo_be.Context;
 using spendo_be.Models;
+using spendo_be.Models.DTO;
 using spendo_be.Services.QueryCriteria;
 
 namespace spendo_be.Services;
@@ -9,30 +10,41 @@ public class BudgetService : IBudgetService
 {
     private readonly SpendoContext _context = new();
 
-    public Budget CreateBudget(Budget budget)
+    public Budget CreateBudget(BudgetCreateDto budgetInfo, int userId)
     {
+        var budget = new Budget
+        {
+            Name = budgetInfo.Name,
+            Startdate = budgetInfo.StartDate,
+            Enddate = budgetInfo.StartDate.AddDays(budgetInfo.Period),
+            Period = budgetInfo.Period,
+            Budgetlimit = budgetInfo.BudgetLimit,
+            Categoryid = budgetInfo.CategoryId,
+        };
         _context.Budgets.Add(budget);
         _context.SaveChanges();
         return budget;
     }
     
-    public async Task<List<Budget>> GetListBudget(BudgetQueryCriteria criteria)
+    public List<BudgetDto> GetListBudget(int userId)
     {
-        var query = _context.Budgets.AsQueryable();
-        
-        query = query.Where(b => b.Userid == criteria.UserId);
-        
-        if (criteria.IsOnlyExceeded)
-        {
-            query = query.Where(b => b.Current > b.Budgetlimit);
-        }
-        
-        query = query.OrderBy(b => b.Id);
-        return await query.ToListAsync();
+        var budgets = _context.Budgets.Where(b => b.Userid == userId)
+            .Select(b => new BudgetDto
+            {
+                Id = b.Id,
+                Name = b.Name,
+                StartDate = b.Startdate,
+                EndDate = b.Enddate,
+                Current = b.Current,
+                BudgetLimit = b.Budgetlimit
+            }).ToList();
+        return budgets;
     }
 
-    public Budget UpdateBudget(Budget budget)
+    public Budget UpdateBudget(BudgetUpdateDto budgetInfo)
     {
+        var budget = _context.Budgets.FirstOrDefault(b => b.Id == budgetInfo.Id);
+        budget.Name = budgetInfo.Name;
         _context.Budgets.Update(budget);
         _context.SaveChanges();
         return budget;
