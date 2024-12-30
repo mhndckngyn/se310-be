@@ -27,7 +27,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] UserDto userInfo)
+    public IActionResult CreateUser([FromBody] UserDto userInfo)
     {
         var user = _userService.Create(userInfo);
         return CreatedAtAction(nameof(Get), new { userId = user.Id }, user);
