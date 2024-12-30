@@ -17,9 +17,15 @@ public class UserService : IUserService
         return user;
     }
     
-    public User GetUser(int id)
+    public User GetUserById(int id)
     {
         var user = _context.Users.Find(id);
+        return user;
+    }
+
+    public User? GetUserByEmail(string email)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.Email == email);
         return user;
     }
 }

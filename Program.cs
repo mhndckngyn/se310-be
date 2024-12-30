@@ -1,9 +1,12 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using spendo_be.Services.Extensions;
 
 DotNetEnv.Env.Load();
-var host = Environment.GetEnvironmentVariable("DB_HOST") 
-            ?? throw new InvalidOperationException("Database is not set in the environment variables.");
+var _ = Environment.GetEnvironmentVariable("DB_HOST") 
+            ?? throw new InvalidOperationException("Database info is not set in the environment variables.");
             
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +17,26 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCustomerServices();
+builder.Services.AddCustomServices();
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "spendo_be",
+            ValidAudience = "spendo_api",
+            IssuerSigningKey =
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET"))),
+        };
+    });
 
 var app = builder.Build();
 

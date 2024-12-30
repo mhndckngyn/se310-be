@@ -2,7 +2,7 @@ namespace spendo_be.Services.Extensions;
 
 public static class ServiceExtensions
 {
-    public static IServiceCollection AddCustomerServices(this IServiceCollection services)
+    public static IServiceCollection AddCustomServices(this IServiceCollection services)
     {
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IBudgetService, BudgetService>();
