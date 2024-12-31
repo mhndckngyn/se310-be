@@ -16,7 +16,21 @@ public class AccountService : IAccountService
         return account;
     }
 
-    public List<AccountDto> GetAccounts(int userId)
+    public AccountDto? GetAccountById(int id)
+    {
+        var account = _context.Accounts.Where(a => a.Id == id)
+                        .Select(a => new AccountDto
+                        {
+                            Id = a.Id,
+                            Name = a.Name,
+                            Balance = a.Balance
+                        })
+                        .FirstOrDefault();
+        
+        return account;
+    }
+
+    public List<AccountDto> GetAccountsByUser(int userId)
     {
         var accounts = _context.Accounts.Where(a => a.Userid == userId)
             .Select(a => new AccountDto
@@ -28,9 +42,15 @@ public class AccountService : IAccountService
         return accounts;
     }
 
-    public Account UpdateAccount(AccountUpdateDto newAccountInfo)
+    public Account? UpdateAccount(AccountUpdateDto newAccountInfo)
     {
-        var account = _context.Accounts.FirstOrDefault(a => a.Id == newAccountInfo.Id);
+        var account = _context.Accounts.Find(newAccountInfo.Id);
+
+        if (account == null)
+        {
+            return null;
+        }
+        
         if (newAccountInfo.Name != null && account.Name != newAccountInfo.Name)
         {
             account.Name = newAccountInfo.Name;
@@ -40,10 +60,13 @@ public class AccountService : IAccountService
         return account;
     }
 
-    public Account DeleteAccount(int id)
+    public Account? DeleteAccount(int id)
     {
         var account = _context.Accounts.Find(id);
-        if (account != null) _context.Accounts.Remove(account);
+        if (account != null)
+        {
+            _context.Accounts.Remove(account);
+        }
         return account;
     }
 }

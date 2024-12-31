@@ -16,6 +16,20 @@ public class AccountController : ControllerBase
     {
         _accountService = accountService;
     }
+
+    [Authorize]
+    [HttpGet("{id:int}")]
+    public IActionResult GetAccount([FromRoute] int id)
+    {
+        var account = _accountService.GetAccountById(id);
+
+        if (account == null)
+        {
+            return NotFound();
+        }
+        
+        return Ok(account);
+    }
     
     [Authorize]
     [HttpGet]
@@ -24,9 +38,10 @@ public class AccountController : ControllerBase
         var claimUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(claimUserId, out var userId))
         {
-            return Unauthorized("Invalid or missing user ID.");
+            return Unauthorized();
         }
-        var accounts = _accountService.GetAccounts(userId);
+        
+        var accounts = _accountService.GetAccountsByUser(userId);
         return Ok(accounts);
     }
 
@@ -37,25 +52,36 @@ public class AccountController : ControllerBase
         var claimUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(claimUserId, out var userId))
         {
-            return Unauthorized("Invalid or missing user ID.");
+            return Unauthorized();
         }
+        
         var account = _accountService.CreateAccount(accountName);
-        return Ok(account);
+        return CreatedAtAction(nameof(GetAccount), new { id = account.Id }, account);
     }
 
     [Authorize]
     [HttpPut]
     public IActionResult UpdateAccount([FromBody] AccountUpdateDto newAccountInfo)
     {
-        var account = _accountService.UpdateAccount(newAccountInfo);
-        return Ok(account);
+        var updatedAccount = _accountService.UpdateAccount(newAccountInfo);
+        if (updatedAccount == null)
+        {
+            return NotFound();
+        }
+        
+        return NoContent();
     }
 
     [Authorize]
-    [HttpDelete("{accountId:int}")]
-    public IActionResult DeleteAccount([FromRoute] int accountId)
+    [HttpDelete("{id:int}")]
+    public IActionResult DeleteAccount([FromRoute] int id)
     {
-        _accountService.DeleteAccount(accountId);
+        var deletedAccount = _accountService.DeleteAccount(id);
+        if (deletedAccount == null)
+        {
+            return NotFound();
+        }
+        
         return NoContent();
     }
 }
