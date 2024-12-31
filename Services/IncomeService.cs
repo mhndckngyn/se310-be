@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using spendo_be.Context;
 using spendo_be.Models;
+using spendo_be.Models.DTO;
 using spendo_be.Services.QueryCriteria;
 
 namespace spendo_be.Services;
@@ -9,14 +10,24 @@ public class IncomeService : IIncomeService
 {
     private readonly SpendoContext _context = new();
 
-    public Income CreateIncome(Income income)
+    public Income CreateIncome(IncomeCreateDto incomeInfo)
     {
+        var income = new Income
+        {
+            Title = incomeInfo.Title,
+            Description = incomeInfo.Description,
+            Amount = incomeInfo.Amount,
+            Date = incomeInfo.Date,
+            Accountid = incomeInfo.AccountId,
+            Categoryid = incomeInfo.CategoryId
+        };
+        
         _context.Incomes.Add(income);
         _context.SaveChanges();
         return income;
     }
 
-    public async Task<List<Income>> GetListIncomeByCriteria(RecordQueryCriteria criteria)
+    public List<Income> GetListIncomeByCriteria(RecordQueryCriteria criteria)
     {
         var query = _context.Incomes.AsQueryable();
 
@@ -36,20 +47,40 @@ public class IncomeService : IIncomeService
 
         if (criteria.StartDate.HasValue)
         {
-            query = query.Where(i => i.Createdat >= criteria.StartDate);
+            query = query.Where(i => i.Date >= criteria.StartDate);
         }
 
         if (criteria.EndDate.HasValue)
         {
-            query = query.Where(i => i.Createdat <= criteria.EndDate);
+            query = query.Where(i => i.Date <= criteria.EndDate);
         }
 
-        query = query.OrderByDescending(i => i.Createdat);
-        return await query.ToListAsync();
+        query = query.OrderByDescending(i => i.Date);
+        return query.ToList();
     }
 
-    public Income UpdateIncome(Income income)
+    public Income UpdateIncome(IncomeUpdateDto incomeInfo)
     {
+        var income = _context.Incomes.FirstOrDefault(i => i.Id == incomeInfo.Id);
+        if (incomeInfo.Title != null)
+        {
+            income.Title = incomeInfo.Title;
+        }
+
+        if (incomeInfo.Description != null)
+        {
+            income.Description = incomeInfo.Description;
+        }
+
+        if (incomeInfo.CategoryId != null)
+        {
+            income.Categoryid = incomeInfo.CategoryId;
+        }
+        
+        income.Amount = incomeInfo.Amount;
+        income.Date = incomeInfo.Date;
+        income.Accountid = incomeInfo.AccountId;
+        
         _context.Incomes.Update(income);
         _context.SaveChanges();
         return income;
