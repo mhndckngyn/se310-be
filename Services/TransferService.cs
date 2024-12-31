@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using spendo_be.Context;
 using spendo_be.Models;
+using spendo_be.Models.DTO;
 using spendo_be.Services.QueryCriteria;
 
 namespace spendo_be.Services;
@@ -9,14 +10,24 @@ public class TransferService : ITransferService
 {
     private readonly SpendoContext _context = new();
     
-    public Transfer CreateTransfer(Transfer transfer)
+    public Transfer CreateTransfer(TransferCreateDto transferInfo)
     {
+        var transfer = new Transfer
+        {
+            Title = transferInfo.Title,
+            Description = transferInfo.Description,
+            Amount = transferInfo.Amount,
+            Date = transferInfo.Date,
+            Sourceaccountid = transferInfo.SourceAccountId,
+            Targetaccountid = transferInfo.TargetAccountId,
+            Categoryid = transferInfo.CategoryId,
+        };
         _context.Transfers.Add(transfer);
         _context.SaveChanges();
         return transfer;
     }
 
-    public async Task<List<Transfer>> GetListTransferByCriteria(RecordQueryCriteria criteria)
+    public List<Transfer> GetListTransferByCriteria(RecordQueryCriteria criteria)
     {
         var query = _context.Transfers.AsQueryable();
 
@@ -35,20 +46,42 @@ public class TransferService : ITransferService
 
         if (criteria.StartDate.HasValue)
         {
-            query = query.Where(t => t.Createdat >= criteria.StartDate);
+            query = query.Where(t => t.Date >= criteria.StartDate);
         }
 
         if (criteria.EndDate.HasValue)
         {
-            query = query.Where(t => t.Createdat <= criteria.EndDate);
+            query = query.Where(t => t.Date <= criteria.EndDate);
         }
         
-        query = query.OrderByDescending(t => t.Createdat);
-        return await query.ToListAsync();
+        query = query.OrderByDescending(t => t.Date);
+        return query.ToList();
     }
 
-    public Transfer UpdateTransfer(Transfer transfer)
+    public Transfer UpdateTransfer(TransferUpdateDto transferInfo)
     {
+        var transfer = _context.Transfers.FirstOrDefault(t => t.Id == transferInfo.Id);
+
+        if (transferInfo.Title != transfer.Title)
+        {
+            transfer.Title = transferInfo.Title;
+        }
+        
+        if (transferInfo.Description != null)
+        {
+            transfer.Description = transferInfo.Description;
+        }
+
+        if (transferInfo.CategoryId != null)
+        {
+            transfer.Categoryid = transferInfo.CategoryId;
+        }
+        
+        transfer.Amount = transferInfo.Amount;
+        transfer.Date = transferInfo.Date;
+        transfer.Sourceaccountid = transferInfo.SourceAccountId;
+        transfer.Targetaccountid = transferInfo.TargetAccountId;
+        
         _context.Transfers.Update(transfer);
         _context.SaveChanges();
         return transfer;
