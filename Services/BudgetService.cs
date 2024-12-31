@@ -10,7 +10,24 @@ public class BudgetService : IBudgetService
 {
     private readonly SpendoContext _context = new();
 
-    public Budget CreateBudget(BudgetCreateDto budgetInfo, int userId)
+    public BudgetDto? GetBudgetById(int id)
+    {
+        var budget = _context.Budgets.Where(a => a.Id == id)
+            .Select(a => new BudgetDto
+            {
+                Id = a.Id,
+                Name = a.Name,
+                StartDate = a.Startdate,
+                EndDate = a.Enddate,
+                Current = a.Current,
+                BudgetLimit = a.Budgetlimit
+            })
+            .FirstOrDefault();
+        
+        return budget;
+    }
+
+    public Budget CreateBudget(BudgetCreateDto budgetInfo)
     {
         var budget = new Budget
         {
@@ -20,13 +37,14 @@ public class BudgetService : IBudgetService
             Period = budgetInfo.Period,
             Budgetlimit = budgetInfo.BudgetLimit,
             Categoryid = budgetInfo.CategoryId,
+            Userid = budgetInfo.UserId
         };
         _context.Budgets.Add(budget);
         _context.SaveChanges();
         return budget;
     }
     
-    public List<BudgetDto> GetListBudget(int userId)
+    public List<BudgetDto> GetListBudgetByUser(int userId)
     {
         var budgets = _context.Budgets.Where(b => b.Userid == userId)
             .Select(b => new BudgetDto
@@ -38,19 +56,25 @@ public class BudgetService : IBudgetService
                 Current = b.Current,
                 BudgetLimit = b.Budgetlimit
             }).ToList();
+        
         return budgets;
     }
 
-    public Budget UpdateBudget(BudgetUpdateDto budgetInfo)
+    public Budget? UpdateBudget(BudgetUpdateDto budgetInfo)
     {
-        var budget = _context.Budgets.FirstOrDefault(b => b.Id == budgetInfo.Id);
+        var budget = _context.Budgets.Find(budgetInfo.Id);
+        if (budget == null)
+        {
+            return null;
+        }
+        
         budget.Name = budgetInfo.Name;
         _context.Budgets.Update(budget);
         _context.SaveChanges();
         return budget;
     }
 
-    public Budget DeleteBudget(int id)
+    public Budget? DeleteBudget(int id)
     {
         var budget = _context.Budgets.Find(id);
         if (budget != null) _context.Budgets.Remove(budget);

@@ -18,45 +18,71 @@ public class BudgetController : ControllerBase
         _budgetService = budgetService;
     }
 
-    [HttpGet]
     [Authorize]
+    [HttpGet("{id:int}")]
+    public IActionResult GetBudget([FromRoute] int id)
+    {
+        var budget = _budgetService.GetBudgetById(id);
+        if (budget == null)
+        {
+            return NotFound();
+        }
+        
+        return Ok(budget);
+    }
+
+    [Authorize]
+    [HttpGet]
     public IActionResult GetBudgets()
     {
         var claimUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(claimUserId, out var userId))
         {
-            return Unauthorized("Invalid or missing user ID.");
+            return Unauthorized();
         }
-        var budgets = _budgetService.GetListBudget(userId);
+        
+        var budgets = _budgetService.GetListBudgetByUser(userId);
         return Ok(budgets);
     }
 
-    [HttpPost]
     [Authorize]
+    [HttpPost]
     public IActionResult CreateBudget([FromBody] BudgetCreateDto budgetInfo)
     {
         var claimUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(claimUserId, out var userId))
         {
-            return Unauthorized("Invalid or missing user ID.");
+            return Unauthorized();
         }
-        _budgetService.CreateBudget(budgetInfo, userId);
-        return Ok();
+        
+        budgetInfo.UserId = userId;
+        var budget = _budgetService.CreateBudget(budgetInfo);
+        return CreatedAtAction(nameof(GetBudget), new { id = budget.Id }, budget);
     }
 
-    [HttpPut]
     [Authorize]
+    [HttpPut]
     public IActionResult UpdateBudget([FromBody] BudgetUpdateDto budgetInfo)
     {
-        _budgetService.UpdateBudget(budgetInfo);
-        return Ok();
+        var updatedBudget = _budgetService.UpdateBudget(budgetInfo);
+        if (updatedBudget == null)
+        {
+            return NotFound();
+        }
+        
+        return NoContent();
     }
 
-    [HttpDelete("{id:int}")]
     [Authorize]
+    [HttpDelete("{id:int}")]
     public IActionResult DeleteBudget([FromRoute] int id)
     {
-        _budgetService.DeleteBudget(id);
-        return Ok();
+        var deletedBudget = _budgetService.DeleteBudget(id);
+        if (deletedBudget == null)
+        {
+            return NotFound();
+        }
+        
+        return NoContent();
     }
 }

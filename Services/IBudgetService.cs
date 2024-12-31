@@ -6,8 +6,9 @@ namespace spendo_be.Services;
 
 public interface IBudgetService
 {
-    public Budget CreateBudget(BudgetCreateDto budgetInfo, int userId);
-    public List<BudgetDto> GetListBudget(int userId);
-    public Budget UpdateBudget(BudgetUpdateDto budgetInfo);
-    public Budget DeleteBudget(int id);
+    public BudgetDto? GetBudgetById(int id);
+    public Budget CreateBudget(BudgetCreateDto budgetInfo);
+    public List<BudgetDto> GetListBudgetByUser(int userId);
+    public Budget? UpdateBudget(BudgetUpdateDto budgetInfo);
+    public Budget? DeleteBudget(int id);
 }

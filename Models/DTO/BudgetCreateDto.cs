@@ -7,4 +7,5 @@ public record BudgetCreateDto
     public int Period { get; init; }
     public decimal BudgetLimit { get; init; }
     public int? CategoryId { get; init; }
+    public int UserId { get; set; }
 };
