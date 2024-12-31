@@ -60,10 +60,10 @@ public class AccountController : ControllerBase
     }
 
     [Authorize]
-    [HttpPut]
-    public IActionResult UpdateAccount([FromBody] AccountUpdateDto newAccountInfo)
+    [HttpPut("{id:int}")]
+    public IActionResult UpdateAccount([FromRoute] int id, [FromBody] string accountName)
     {
-        var updatedAccount = _accountService.UpdateAccount(newAccountInfo);
+        var updatedAccount = _accountService.UpdateAccount(id, accountName);
         if (updatedAccount == null)
         {
             return NotFound();

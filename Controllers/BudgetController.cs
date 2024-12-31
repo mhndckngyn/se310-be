@@ -61,10 +61,10 @@ public class BudgetController : ControllerBase
     }
 
     [Authorize]
-    [HttpPut]
-    public IActionResult UpdateBudget([FromBody] BudgetUpdateDto budgetInfo)
+    [HttpPut("{id:int}")]
+    public IActionResult UpdateBudget([FromRoute] int id, [FromBody] BudgetUpdateDto budgetInfo)
     {
-        var updatedBudget = _budgetService.UpdateBudget(budgetInfo);
+        var updatedBudget = _budgetService.UpdateBudget(id, budgetInfo);
         if (updatedBudget == null)
         {
             return NotFound();

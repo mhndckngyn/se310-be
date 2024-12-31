@@ -64,9 +64,9 @@ public class ExpenseService : IExpenseService
         return query.ToList();
     }
 
-    public Expense? UpdateExpense(ExpenseUpdateDto expenseInfo)
+    public Expense? UpdateExpense(int id, ExpenseUpdateDto expenseInfo)
     {
-        var expense = _context.Expenses.Find(expenseInfo.Id);
+        var expense = _context.Expenses.Find(id);
 
         if (expense == null)
         {

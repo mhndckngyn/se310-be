@@ -42,19 +42,16 @@ public class AccountService : IAccountService
         return accounts;
     }
 
-    public Account? UpdateAccount(AccountUpdateDto newAccountInfo)
+    public Account? UpdateAccount(int id, string accountName)
     {
-        var account = _context.Accounts.Find(newAccountInfo.Id);
+        var account = _context.Accounts.Find(id);
 
         if (account == null)
         {
             return null;
         }
-        
-        if (newAccountInfo.Name != null && account.Name != newAccountInfo.Name)
-        {
-            account.Name = newAccountInfo.Name;
-        }
+
+        account.Name = accountName;
         _context.Accounts.Update(account);
         _context.SaveChanges();
         return account;

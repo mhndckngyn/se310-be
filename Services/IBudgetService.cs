@@ -9,6 +9,6 @@ public interface IBudgetService
     public BudgetDto? GetBudgetById(int id);
     public Budget CreateBudget(BudgetCreateDto budgetInfo);
     public List<BudgetDto> GetListBudgetByUser(int userId);
-    public Budget? UpdateBudget(BudgetUpdateDto budgetInfo);
+    public Budget? UpdateBudget(int id, BudgetUpdateDto budgetInfo);
     public Budget? DeleteBudget(int id);
 }

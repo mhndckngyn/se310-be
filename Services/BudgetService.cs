@@ -1,8 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using spendo_be.Context;
 using spendo_be.Models;
 using spendo_be.Models.DTO;
-using spendo_be.Services.QueryCriteria;
 
 namespace spendo_be.Services;
 
@@ -60,9 +58,9 @@ public class BudgetService : IBudgetService
         return budgets;
     }
 
-    public Budget? UpdateBudget(BudgetUpdateDto budgetInfo)
+    public Budget? UpdateBudget(int id, BudgetUpdateDto budgetInfo)
     {
-        var budget = _context.Budgets.Find(budgetInfo.Id);
+        var budget = _context.Budgets.Find(id);
         if (budget == null)
         {
             return null;

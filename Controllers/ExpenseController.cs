@@ -68,19 +68,19 @@ public class ExpenseController : ControllerBase
         return Ok(expenses);
     }
     
-    [HttpPost]
     [Authorize]
+    [HttpPost]
     public IActionResult CreateExpense([FromBody] ExpenseCreateDto incomeInfo)
     {
         var expense = _expenseService.CreateExpense(incomeInfo);
         return CreatedAtAction(nameof(GetExpenseById), new { id = expense.Id }, expense);
     }
 
-    [HttpPut]
     [Authorize]
-    public IActionResult UpdateIncome([FromBody] ExpenseUpdateDto incomeInfo)
+    [HttpPut("{id:int}")]
+    public IActionResult UpdateIncome([FromRoute] int id, [FromBody] ExpenseUpdateDto incomeInfo)
     {
-        var updatedExpense = _expenseService.UpdateExpense(incomeInfo);
+        var updatedExpense = _expenseService.UpdateExpense(id, incomeInfo);
 
         if (updatedExpense == null)
         {
@@ -90,8 +90,8 @@ public class ExpenseController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:int}")]
     [Authorize]
+    [HttpDelete("{id:int}")]
     public IActionResult DeleteIncome([FromRoute] int id)
     {
         var deletedExpense = _expenseService.DeleteExpense(id);

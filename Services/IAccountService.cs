@@ -8,6 +8,6 @@ public interface IAccountService
     public Account CreateAccount(string accountName);
     public AccountDto? GetAccountById(int id);
     public List<AccountDto> GetAccountsByUser(int userId);
-    public Account? UpdateAccount(AccountUpdateDto accountUpdateDto);
+    public Account? UpdateAccount(int id, string accountName);
     public Account? DeleteAccount(int id);
 }
