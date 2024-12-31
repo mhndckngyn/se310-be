@@ -25,6 +25,11 @@ public class CurrencyController : ControllerBase
     public IActionResult GetCurrencyById([FromRoute] int currencyId)
     {
         var currency = _currencyService.GetCurrencyById(currencyId);
+        if (currency == null)
+        {
+            return NotFound();
+        }
+        
         return Ok(currency);
     }
 }

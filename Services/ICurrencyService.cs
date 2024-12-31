@@ -5,5 +5,5 @@ namespace spendo_be.Services;
 public interface ICurrencyService
 {
     public List<Currency> GetCurrencies();
-    public Currency GetCurrencyById(int id);
+    public Currency? GetCurrencyById(int id);
 }

@@ -12,7 +12,7 @@ public class CurrencyService : ICurrencyService
         return _context.Currencies.ToList();
     }
 
-    public Currency GetCurrencyById(int id)
+    public Currency? GetCurrencyById(int id)
     {
         return _context.Currencies.Find(id);
     }
