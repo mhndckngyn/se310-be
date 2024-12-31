@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using spendo_be.Context;
 using spendo_be.Models;
+using spendo_be.Models.DTO;
 using spendo_be.Services.QueryCriteria;
 
 namespace spendo_be.Services;
@@ -9,14 +10,24 @@ public class ExpenseService : IExpenseService
 {
     private readonly SpendoContext _context = new();
     
-    public Expense CreateExpense(Expense expense)
+    public Expense CreateExpense(ExpenseCreateDto expenseInfo)
     {
+        var expense = new Expense
+        {
+            Title = expenseInfo.Title,
+            Description = expenseInfo.Description,
+            Amount = expenseInfo.Amount,
+            Date = expenseInfo.Date,
+            Accountid = expenseInfo.AccountId,
+            Categoryid = expenseInfo.CategoryId
+        };
+        
         _context.Expenses.Add(expense);
         _context.SaveChanges();
         return expense;
     }
 
-    public async Task<List<Expense>> GetListExpense(RecordQueryCriteria criteria)
+    public List<Expense> GetListExpenseByCriteria(RecordQueryCriteria criteria)
     {
         var query = _context.Expenses.AsQueryable();
 
@@ -36,20 +47,40 @@ public class ExpenseService : IExpenseService
 
         if (criteria.StartDate.HasValue)
         {
-            query = query.Where(e => e.Createdat >= criteria.StartDate);
+            query = query.Where(e => e.Date >= criteria.StartDate);
         }
         
         if (criteria.EndDate.HasValue)
         {
-            query = query.Where(e => e.Createdat >= criteria.EndDate);
+            query = query.Where(e => e.Date >= criteria.EndDate);
         }
 
-        query = query.OrderByDescending(e => e.Createdat);
-        return await query.ToListAsync();
+        query = query.OrderByDescending(e => e.Date);
+        return query.ToList();
     }
 
-    public Expense UpdateExpense(Expense expense)
+    public Expense UpdateExpense(ExpenseUpdateDto expenseInfo)
     {
+        var expense = _context.Expenses.FirstOrDefault(e => e.Id == expenseInfo.Id);
+        if (expenseInfo.Title != null)
+        {
+            expense.Title = expenseInfo.Title;
+        }
+
+        if (expenseInfo.Description != null)
+        {
+            expense.Description = expenseInfo.Description;
+        }
+
+        if (expenseInfo.CategoryId != null)
+        {
+            expense.Categoryid = expenseInfo.CategoryId;
+        }
+        
+        expense.Amount = expenseInfo.Amount;
+        expense.Date = expenseInfo.Date;
+        expense.Accountid = expenseInfo.AccountId;
+        
         _context.Expenses.Update(expense);
         _context.SaveChanges();
         return expense;
