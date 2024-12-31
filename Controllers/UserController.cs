@@ -19,10 +19,15 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("{userId:int}")]
-    public IActionResult Get([FromRoute] int userId)
+    [HttpGet("{id:int}")]
+    public IActionResult Get([FromRoute] int id)
     {
-        var user = _userService.GetUserById(userId);
+        var user = _userService.GetUserById(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
         return Ok(user);
     }
 
@@ -30,7 +35,7 @@ public class UserController : ControllerBase
     public IActionResult CreateUser([FromBody] UserDto userInfo)
     {
         var user = _userService.Create(userInfo);
-        return CreatedAtAction(nameof(Get), new { userId = user.Id }, user);
+        return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
     }
 
     [HttpPost("login")]

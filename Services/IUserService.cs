@@ -7,6 +7,6 @@ namespace spendo_be.Services;
 public interface IUserService
 {
     public User Create(UserDto userInfo);
-    public User GetUserById(int id);
+    public User? GetUserById(int id);
     public User? GetUserByEmail(string email);
 }
