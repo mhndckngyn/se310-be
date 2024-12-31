@@ -52,9 +52,9 @@ public class BudgetController : ControllerBase
         return Ok();
     }
 
-    [HttpDelete]
+    [HttpDelete("{id:int}")]
     [Authorize]
-    public IActionResult DeleteBudget(int id)
+    public IActionResult DeleteBudget([FromRoute] int id)
     {
         _budgetService.DeleteBudget(id);
         return Ok();

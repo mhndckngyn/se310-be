@@ -57,7 +57,7 @@ public class ExpenseController : ControllerBase
     
     [HttpPost]
     [Authorize]
-    public IActionResult CreateExpense(ExpenseCreateDto incomeInfo)
+    public IActionResult CreateExpense([FromBody] ExpenseCreateDto incomeInfo)
     {
         _expenseService.CreateExpense(incomeInfo);
         return Ok();
@@ -65,15 +65,15 @@ public class ExpenseController : ControllerBase
 
     [HttpPut]
     [Authorize]
-    public IActionResult UpdateIncome(ExpenseUpdateDto incomeInfo)
+    public IActionResult UpdateIncome([FromBody] ExpenseUpdateDto incomeInfo)
     {
         _expenseService.UpdateExpense(incomeInfo);
         return Ok();
     }
 
-    [HttpDelete]
+    [HttpDelete("{id:int}")]
     [Authorize]
-    public IActionResult DeleteIncome(int id)
+    public IActionResult DeleteIncome([FromRoute] int id)
     {
         _expenseService.DeleteExpense(id);
         return Ok();

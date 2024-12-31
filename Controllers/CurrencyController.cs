@@ -22,7 +22,7 @@ public class CurrencyController : ControllerBase
     }
 
     [HttpGet("{currencyId:int}")]
-    public IActionResult GetCurrencyById(int currencyId)
+    public IActionResult GetCurrencyById([FromRoute] int currencyId)
     {
         var currency = _currencyService.GetCurrencyById(currencyId);
         return Ok(currency);

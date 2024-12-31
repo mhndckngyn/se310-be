@@ -20,7 +20,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{userId:int}")]
-    public IActionResult Get(int userId)
+    public IActionResult Get([FromRoute] int userId)
     {
         var user = _userService.GetUserById(userId);
         return Ok(user);
@@ -42,15 +42,20 @@ public class UserController : ControllerBase
             return Unauthorized();
         }
         
-        // Generate JWT
-        var tokenHander = new JwtSecurityTokenHandler();
+        var tokenString = GenerateJwtToken(user.Id, user.Email);
+        
+        return Ok (new { Token = tokenString });
+    }
+
+    private static string GenerateJwtToken(int id, string email)
+    {
         var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET"));
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Name)
+                new Claim(ClaimTypes.NameIdentifier, id.ToString()),
+                new Claim(ClaimTypes.Name, email)
             }),
             Expires = DateTime.UtcNow.AddDays(28),
             Issuer = "spendo_be",
@@ -58,9 +63,9 @@ public class UserController : ControllerBase
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         
+        var tokenHander = new JwtSecurityTokenHandler();
         var token = tokenHander.CreateToken(tokenDescriptor);
         var tokenString = tokenHander.WriteToken(token);
-        
-        return Ok (new { Token = tokenString });
+        return tokenString;
     }
 }

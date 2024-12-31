@@ -62,17 +62,17 @@ public class IncomeService : IIncomeService
     public Income UpdateIncome(IncomeUpdateDto incomeInfo)
     {
         var income = _context.Incomes.FirstOrDefault(i => i.Id == incomeInfo.Id);
-        if (incomeInfo.Title != null)
+        if (incomeInfo.Title != income.Title)
         {
             income.Title = incomeInfo.Title;
         }
 
-        if (incomeInfo.Description != null)
+        if (incomeInfo.Description != income.Description)
         {
             income.Description = incomeInfo.Description;
         }
 
-        if (incomeInfo.CategoryId != null)
+        if (incomeInfo.CategoryId != income.Categoryid)
         {
             income.Categoryid = incomeInfo.CategoryId;
         }

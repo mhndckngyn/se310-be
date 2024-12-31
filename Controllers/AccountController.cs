@@ -53,7 +53,7 @@ public class AccountController : ControllerBase
 
     [Authorize]
     [HttpDelete("{accountId:int}")]
-    public IActionResult DeleteAccount(int accountId)
+    public IActionResult DeleteAccount([FromRoute] int accountId)
     {
         _accountService.DeleteAccount(accountId);
         return NoContent();

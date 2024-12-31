@@ -57,7 +57,7 @@ public class IncomeController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public IActionResult CreateIncome(IncomeCreateDto incomeInfo)
+    public IActionResult CreateIncome([FromBody] IncomeCreateDto incomeInfo)
     {
         _incomeService.CreateIncome(incomeInfo);
         return Ok();
@@ -65,15 +65,15 @@ public class IncomeController : ControllerBase
 
     [HttpPut]
     [Authorize]
-    public IActionResult UpdateIncome(IncomeUpdateDto incomeInfo)
+    public IActionResult UpdateIncome([FromBody] IncomeUpdateDto incomeInfo)
     {
         _incomeService.UpdateIncome(incomeInfo);
         return Ok();
     }
 
-    [HttpDelete]
+    [HttpDelete("{id:int}")]
     [Authorize]
-    public IActionResult DeleteIncome(int id)
+    public IActionResult DeleteIncome([FromRoute] int id)
     {
         _incomeService.DeleteIncome(id);
         return Ok();
