@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using spendo_be.Context;
 using spendo_be.Models;
 using spendo_be.Models.DTO;
@@ -9,6 +8,12 @@ namespace spendo_be.Services;
 public class ExpenseService : IExpenseService
 {
     private readonly SpendoContext _context = new();
+
+    public Expense? GetExpenseById(int id)
+    {
+        var expense = _context.Expenses.Find(id);
+        return expense;
+    }
     
     public Expense CreateExpense(ExpenseCreateDto expenseInfo)
     {
@@ -59,24 +64,18 @@ public class ExpenseService : IExpenseService
         return query.ToList();
     }
 
-    public Expense UpdateExpense(ExpenseUpdateDto expenseInfo)
+    public Expense? UpdateExpense(ExpenseUpdateDto expenseInfo)
     {
-        var expense = _context.Expenses.FirstOrDefault(e => e.Id == expenseInfo.Id);
-        if (expenseInfo.Title != null)
-        {
-            expense.Title = expenseInfo.Title;
-        }
+        var expense = _context.Expenses.Find(expenseInfo.Id);
 
-        if (expenseInfo.Description != null)
+        if (expense == null)
         {
-            expense.Description = expenseInfo.Description;
-        }
-
-        if (expenseInfo.CategoryId != null)
-        {
-            expense.Categoryid = expenseInfo.CategoryId;
+            return null;
         }
         
+        expense.Title = expenseInfo.Title;
+        expense.Description = expenseInfo.Description;
+        expense.Categoryid = expenseInfo.CategoryId;
         expense.Amount = expenseInfo.Amount;
         expense.Date = expenseInfo.Date;
         expense.Accountid = expenseInfo.AccountId;
@@ -86,10 +85,15 @@ public class ExpenseService : IExpenseService
         return expense;
     }
 
-    public Expense DeleteExpense(int id)
+    public Expense? DeleteExpense(int id)
     {
         var expense = _context.Expenses.Find(id);
-        if (expense != null) _context.Expenses.Remove(expense);
+        if (expense == null)
+        {
+            return null;
+        }
+        
+        _context.Expenses.Remove(expense);
         _context.SaveChanges();
         return expense;
     }

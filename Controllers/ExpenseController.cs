@@ -17,6 +17,19 @@ public class ExpenseController : ControllerBase
     {
         _expenseService = expenseService;
     }
+
+    [Authorize]
+    [HttpGet("${id:int}")]
+    public IActionResult GetExpenseById(int id)
+    {
+        var expense = _expenseService.GetExpenseById(id);
+        if (expense == null)
+        {
+            return NotFound();
+        }
+        
+        return Ok(expense);
+    }
     
     [Authorize]
     [HttpGet]
@@ -29,7 +42,7 @@ public class ExpenseController : ControllerBase
         var claimUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(claimUserId, out var userId))
         {
-            return Unauthorized("Invalid or missing user ID.");
+            return Unauthorized();
         }
         
         var accountIdsAsInts = accountIds
@@ -59,23 +72,35 @@ public class ExpenseController : ControllerBase
     [Authorize]
     public IActionResult CreateExpense([FromBody] ExpenseCreateDto incomeInfo)
     {
-        _expenseService.CreateExpense(incomeInfo);
-        return Ok();
+        var expense = _expenseService.CreateExpense(incomeInfo);
+        return CreatedAtAction(nameof(GetExpenseById), new { id = expense.Id }, expense);
     }
 
     [HttpPut]
     [Authorize]
     public IActionResult UpdateIncome([FromBody] ExpenseUpdateDto incomeInfo)
     {
-        _expenseService.UpdateExpense(incomeInfo);
-        return Ok();
+        var updatedExpense = _expenseService.UpdateExpense(incomeInfo);
+
+        if (updatedExpense == null)
+        {
+            return NotFound();
+        }
+        
+        return NoContent();
     }
 
     [HttpDelete("{id:int}")]
     [Authorize]
     public IActionResult DeleteIncome([FromRoute] int id)
     {
-        _expenseService.DeleteExpense(id);
-        return Ok();
+        var deletedExpense = _expenseService.DeleteExpense(id);
+
+        if (deletedExpense == null)
+        {
+            return NotFound();
+        }
+        
+        return NoContent();
     }
 }
