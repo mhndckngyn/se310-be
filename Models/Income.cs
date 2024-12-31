@@ -29,6 +29,9 @@ public partial class Income
 
     [Column("updatedat", TypeName = "timestamp without time zone")]
     public DateTime Updatedat { get; set; }
+    
+    [Column("date", TypeName = "timestamp without time zone")]
+    public DateTime Date { get; set; }
 
     [Column("accountid")]
     public int Accountid { get; set; }

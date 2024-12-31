@@ -101,6 +101,7 @@ public partial class SpendoContext : DbContext
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('expense_id_seq'::regclass)");
             entity.Property(e => e.Createdat).HasDefaultValueSql("now()");
             entity.Property(e => e.Updatedat).HasDefaultValueSql("now()");
+            entity.Property(e => e.Date).HasDefaultValueSql("now()");
 
             entity.HasOne(d => d.Account).WithMany(p => p.Expenses).HasConstraintName("expense_accountid_fk");
 
@@ -114,6 +115,7 @@ public partial class SpendoContext : DbContext
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('income_id_seq'::regclass)");
             entity.Property(e => e.Createdat).HasDefaultValueSql("now()");
             entity.Property(e => e.Updatedat).HasDefaultValueSql("now()");
+            entity.Property(e => e.Date).HasDefaultValueSql("now()");
 
             entity.HasOne(d => d.Account).WithMany(p => p.Incomes).HasConstraintName("income_accountid_fk");
 
@@ -127,6 +129,7 @@ public partial class SpendoContext : DbContext
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('transfer_id_seq'::regclass)");
             entity.Property(e => e.Createdat).HasDefaultValueSql("now()");
             entity.Property(e => e.Updatedat).HasDefaultValueSql("now()");
+            entity.Property(e => e.Date).HasDefaultValueSql("now()");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Transfers).HasConstraintName("transfer_categoryid_fk");
 
