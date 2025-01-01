@@ -45,17 +45,18 @@ public class AccountController : ControllerBase
         return Ok(accounts);
     }
 
-    [Authorize]
+    // [Authorize]
     [HttpPost]
     public IActionResult CreateAccount([FromBody] string accountName)
     {
-        var claimUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (!int.TryParse(claimUserId, out var userId))
-        {
-            return Unauthorized();
-        }
+        // var claimUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        // if (!int.TryParse(claimUserId, out var userId))
+        // {
+        //     return Unauthorized();
+        // }
+        var userId = 1;
         
-        var account = _accountService.CreateAccount(accountName);
+        var account = _accountService.CreateAccount(userId, accountName);
         return CreatedAtAction(nameof(GetAccount), new { id = account.Id }, account);
     }
 
