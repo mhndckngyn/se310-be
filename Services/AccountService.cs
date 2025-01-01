@@ -60,10 +60,13 @@ public class AccountService : IAccountService
     public Account? DeleteAccount(int id)
     {
         var account = _context.Accounts.Find(id);
-        if (account != null)
+        if (account == null)
         {
-            _context.Accounts.Remove(account);
+            return null;
         }
+        
+        _context.Accounts.Remove(account);
+        _context.SaveChanges();
         return account;
     }
 }

@@ -75,7 +75,13 @@ public class BudgetService : IBudgetService
     public Budget? DeleteBudget(int id)
     {
         var budget = _context.Budgets.Find(id);
-        if (budget != null) _context.Budgets.Remove(budget);
+        if (budget == null)
+        {
+            return null;
+        }
+        
+        _context.Budgets.Remove(budget);
+        _context.SaveChanges();
         return budget;
     }
 }

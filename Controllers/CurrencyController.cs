@@ -21,10 +21,10 @@ public class CurrencyController : ControllerBase
         return Ok(currencies);
     }
 
-    [HttpGet("{currencyId:int}")]
-    public IActionResult GetCurrencyById([FromRoute] int currencyId)
+    [HttpGet("{id:int}")]
+    public IActionResult GetCurrencyById([FromRoute] int id)
     {
-        var currency = _currencyService.GetCurrencyById(currencyId);
+        var currency = _currencyService.GetCurrencyById(id);
         if (currency == null)
         {
             return NotFound();
