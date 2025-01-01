@@ -18,8 +18,21 @@ public class IncomeController : ControllerBase
         _incomeService = incomeService;
     }
 
-    [HttpGet]
     [Authorize]
+    [HttpGet("{id:int}")]
+    public IActionResult GetIncomeById(int id)
+    {
+        var income = _incomeService.GetIncomeById(id);
+        if (income == null)
+        {
+            return NotFound();
+        }
+        
+        return Ok(income);
+    }
+
+    [Authorize]
+    [HttpGet]
     public IActionResult GetIncomes(
         [FromQuery] string[] accountIds, 
         [FromQuery] string[] categoryIds, 
@@ -29,7 +42,7 @@ public class IncomeController : ControllerBase
         var claimUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(claimUserId, out var userId))
         {
-            return Unauthorized("Invalid or missing user ID.");
+            return Unauthorized();
         }
         
         var accountIdsAsInts = accountIds
@@ -55,27 +68,39 @@ public class IncomeController : ControllerBase
         return Ok(incomes);
     }
 
-    [HttpPost]
     [Authorize]
+    [HttpPost]
     public IActionResult CreateIncome([FromBody] IncomeCreateDto incomeInfo)
     {
-        _incomeService.CreateIncome(incomeInfo);
-        return Ok();
+        var income = _incomeService.CreateIncome(incomeInfo);
+        return CreatedAtAction(nameof(GetIncomeById), new { id = income.Id }, income);
     }
 
-    [HttpPut]
     [Authorize]
-    public IActionResult UpdateIncome([FromBody] IncomeUpdateDto incomeInfo)
+    [HttpPut("{id:int}")]
+    public IActionResult UpdateIncome([FromRoute] int id ,[FromBody] IncomeUpdateDto incomeInfo)
     {
-        _incomeService.UpdateIncome(incomeInfo);
-        return Ok();
+        var updatedIncome = _incomeService.UpdateIncome(id, incomeInfo);
+        
+        if (updatedIncome == null)
+        {
+            return NotFound();
+        }
+        
+        return NoContent();
     }
 
-    [HttpDelete("{id:int}")]
     [Authorize]
+    [HttpDelete("{id:int}")]
     public IActionResult DeleteIncome([FromRoute] int id)
     {
-        _incomeService.DeleteIncome(id);
+        var deletedIncome = _incomeService.DeleteIncome(id);
+
+        if (deletedIncome == null)
+        {
+            return NotFound();
+        }
+        
         return Ok();
     }
 }

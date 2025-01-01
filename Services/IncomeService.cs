@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using spendo_be.Context;
 using spendo_be.Models;
 using spendo_be.Models.DTO;
@@ -27,11 +26,17 @@ public class IncomeService : IIncomeService
         return income;
     }
 
+    public Income? GetIncomeById(int id)
+    {
+        var income = _context.Incomes.Find(id);
+        return income;
+    }
+
     public List<Income> GetListIncomeByCriteria(RecordQueryCriteria criteria)
     {
         var query = _context.Incomes.AsQueryable();
 
-        if (criteria.AccountIds is null)
+        if (criteria.AccountIds.Length == 0)
         {
             query = query.Where(i => i.Account.Userid == criteria.UserId);
         }
@@ -40,7 +45,7 @@ public class IncomeService : IIncomeService
             query = query.Where(i => criteria.AccountIds.Contains(i.Accountid));
         }
 
-        if (criteria.CategoryIds != null && criteria.CategoryIds.Length > 0)
+        if (criteria.CategoryIds.Length > 0)
         {
             query = query.Where(i => i.Categoryid.HasValue && criteria.CategoryIds.Contains(i.Categoryid.Value));
         }
@@ -59,37 +64,36 @@ public class IncomeService : IIncomeService
         return query.ToList();
     }
 
-    public Income UpdateIncome(IncomeUpdateDto incomeInfo)
+    public Income? UpdateIncome(int id, IncomeUpdateDto incomeInfo)
     {
-        var income = _context.Incomes.FirstOrDefault(i => i.Id == incomeInfo.Id);
-        if (incomeInfo.Title != income.Title)
-        {
-            income.Title = incomeInfo.Title;
-        }
+        var income = _context.Incomes.Find(id);
 
-        if (incomeInfo.Description != income.Description)
+        if (income == null)
         {
-            income.Description = incomeInfo.Description;
-        }
-
-        if (incomeInfo.CategoryId != income.Categoryid)
-        {
-            income.Categoryid = incomeInfo.CategoryId;
+            return null;
         }
         
+        income.Title = incomeInfo.Title;
+        income.Description = incomeInfo.Description;
         income.Amount = incomeInfo.Amount;
-        income.Date = incomeInfo.Date;
         income.Accountid = incomeInfo.AccountId;
+        income.Categoryid = incomeInfo.CategoryId;
+        income.Date = incomeInfo.Date;
         
         _context.Incomes.Update(income);
         _context.SaveChanges();
         return income;
     }
 
-    public Income DeleteIncome(int id)
+    public Income? DeleteIncome(int id)
     {
         var income = _context.Incomes.Find(id);
-        if (income != null) _context.Incomes.Remove(income);
+        if (income == null)
+        {
+            return null;
+        }
+        
+        _context.Incomes.Remove(income);
         _context.SaveChanges();
         return income;
     }

@@ -2,7 +2,6 @@ namespace spendo_be.Models.DTO;
 
 public record IncomeUpdateDto
 {
-    public int Id { get; init; }
     public string? Title { get; init; }
     public string? Description { get; init; }
     public decimal Amount { get; init; }
