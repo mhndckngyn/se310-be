@@ -27,6 +27,12 @@ public class TransferService : ITransferService
         return transfer;
     }
 
+    public Transfer? GetTransferById(int id)
+    {
+        var transfer = _context.Transfers.Find(id);
+        return transfer;
+    }
+
     public List<Transfer> GetListTransferByCriteria(RecordQueryCriteria criteria)
     {
         var query = _context.Transfers.AsQueryable();
@@ -58,25 +64,18 @@ public class TransferService : ITransferService
         return query.ToList();
     }
 
-    public Transfer UpdateTransfer(TransferUpdateDto transferInfo)
+    public Transfer? UpdateTransfer(int id, TransferUpdateDto transferInfo)
     {
-        var transfer = _context.Transfers.FirstOrDefault(t => t.Id == transferInfo.Id);
+        var transfer = _context.Transfers.Find(id);
 
-        if (transferInfo.Title != transfer.Title)
+        if (transfer == null)
         {
-            transfer.Title = transferInfo.Title;
-        }
-        
-        if (transferInfo.Description != null)
-        {
-            transfer.Description = transferInfo.Description;
+            return null;
         }
 
-        if (transferInfo.CategoryId != null)
-        {
-            transfer.Categoryid = transferInfo.CategoryId;
-        }
-        
+        transfer.Title = transferInfo.Title;
+        transfer.Description = transferInfo.Description;
+        transfer.Categoryid = transferInfo.CategoryId;
         transfer.Amount = transferInfo.Amount;
         transfer.Date = transferInfo.Date;
         transfer.Sourceaccountid = transferInfo.SourceAccountId;
@@ -87,10 +86,16 @@ public class TransferService : ITransferService
         return transfer;
     }
 
-    public Transfer DeleteTransfer(int id)
+    public Transfer? DeleteTransfer(int id)
     {
         var transfer = _context.Transfers.Find(id);
-        if (transfer != null) _context.Transfers.Remove(transfer);
+        
+        if (transfer == null)
+        {
+            return null;
+        }
+        
+        _context.Transfers.Remove(transfer);
         _context.SaveChanges();
         return transfer;
     }

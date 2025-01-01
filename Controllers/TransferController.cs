@@ -18,6 +18,19 @@ public class TransferController : ControllerBase
         _transferService = transferService;
     }
 
+    [HttpGet("{id:int}")]
+    [Authorize]
+    public IActionResult GetTransferById(int id)
+    {
+        var transfer = _transferService.GetTransferById(id);
+        if (transfer == null)
+        {
+            return NotFound();
+        }
+        
+        return Ok(transfer);
+    }
+    
     [HttpGet]
     [Authorize]
     public IActionResult GetTransfers(
@@ -29,7 +42,7 @@ public class TransferController : ControllerBase
         var claimUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(claimUserId, out var userId))
         {
-            return Unauthorized("Invalid or missing user ID.");
+            return Unauthorized();
         }
         
         var accountIdsAsInts = accountIds
@@ -59,23 +72,34 @@ public class TransferController : ControllerBase
     [Authorize]
     public IActionResult CreateTransfer([FromBody] TransferCreateDto transferInfo)
     {
-        _transferService.CreateTransfer(transferInfo);
-        return Ok();
+        var transfer = _transferService.CreateTransfer(transferInfo);
+        return CreatedAtAction(nameof(GetTransferById), new { id = transfer.Id}, transfer);
     }
 
-    [HttpPut]
+    [HttpPut("{id:int}")]
     [Authorize]
-    public IActionResult UpdateTransfer([FromBody] TransferUpdateDto transferInfo)
+    public IActionResult UpdateTransfer([FromRoute] int id, [FromBody] TransferUpdateDto transferInfo)
     {
-        _transferService.UpdateTransfer(transferInfo);
-        return Ok();
+        var updatedTransfer = _transferService.UpdateTransfer(id, transferInfo);
+        if (updatedTransfer == null)
+        {
+            return NotFound();
+        }
+        
+        return NoContent();
     }
 
     [HttpDelete]
     [Authorize]
     public IActionResult DeleteTransfer([FromRoute] int id)
     {
-        _transferService.DeleteTransfer(id);
-        return Ok();
+        var deletedTransfer = _transferService.DeleteTransfer(id);
+
+        if (deletedTransfer == null)
+        {
+            return NotFound();
+        }
+        
+        return NoContent();
     }
 }

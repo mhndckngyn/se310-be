@@ -7,7 +7,8 @@ namespace spendo_be.Services;
 public interface ITransferService
 {
     public Transfer CreateTransfer(TransferCreateDto transferInfo);
+    public Transfer? GetTransferById(int id);
     public List<Transfer> GetListTransferByCriteria(RecordQueryCriteria criteria);
-    public Transfer UpdateTransfer(TransferUpdateDto transferInfo);
-    public Transfer DeleteTransfer(int id);
+    public Transfer? UpdateTransfer(int id, TransferUpdateDto transferInfo);
+    public Transfer? DeleteTransfer(int id);
 }
