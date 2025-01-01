@@ -8,9 +8,9 @@ public class AccountService : IAccountService
 {
     private readonly SpendoContext _context = new();
     
-    public Account CreateAccount(string accountName)
+    public Account CreateAccount(int userId, string accountName)
     {
-        var account = new Account { Name = accountName };
+        var account = new Account { Name = accountName, Userid = userId };
         _context.Accounts.Add(account);
         _context.SaveChanges();
         return account;

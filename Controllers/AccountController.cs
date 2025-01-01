@@ -55,7 +55,7 @@ public class AccountController : ControllerBase
             return Unauthorized();
         }
         
-        var account = _accountService.CreateAccount(accountName);
+        var account = _accountService.CreateAccount(userId, accountName);
         return CreatedAtAction(nameof(GetAccount), new { id = account.Id }, account);
     }
 
