@@ -8,6 +8,11 @@ namespace spendo_be.Services;
 public class UserService : IUserService
 {
     private readonly SpendoContext _context = new();
+
+    public bool DoesUserExist(string email)
+    {
+        return _context.Users.Any(u => u.Email == email);
+    }
     
     public User Create(UserDto userInfo)
     {

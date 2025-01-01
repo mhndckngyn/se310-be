@@ -34,6 +34,13 @@ public class UserController : ControllerBase
     [HttpPost]
     public IActionResult CreateUser([FromBody] UserDto userInfo)
     {
+        var userExist = _userService.DoesUserExist(userInfo.Email);
+
+        if (userExist)
+        {
+            return Conflict();
+        }
+        
         var user = _userService.Create(userInfo);
         return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
     }

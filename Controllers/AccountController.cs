@@ -47,7 +47,7 @@ public class AccountController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public IActionResult CreateAccount([FromBody] string accountName)
+    public IActionResult CreateAccount([FromBody] AccountCreateDto accountInfo)
     {
         var claimUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(claimUserId, out var userId))
@@ -55,7 +55,7 @@ public class AccountController : ControllerBase
             return Unauthorized();
         }
         
-        var account = _accountService.CreateAccount(userId, accountName);
+        var account = _accountService.CreateAccount(userId, accountInfo);
         return CreatedAtAction(nameof(GetAccount), new { id = account.Id }, account);
     }
 
