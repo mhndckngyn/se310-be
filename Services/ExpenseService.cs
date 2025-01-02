@@ -36,7 +36,7 @@ public class ExpenseService : IExpenseService
     {
         var query = _context.Expenses.AsQueryable();
 
-        if (criteria.AccountIds is null)
+        if (criteria.AccountIds.Length == 0)
         {
             query = query.Where(e => e.Account.Userid == criteria.UserId);
         }
@@ -45,7 +45,7 @@ public class ExpenseService : IExpenseService
             query = query.Where(e => criteria.AccountIds.Contains(e.Accountid));
         }
 
-        if (criteria.CategoryIds != null && criteria.CategoryIds.Length > 0)
+        if (criteria.CategoryIds.Length > 0)
         {
             query = query.Where(e => e.Categoryid.HasValue && criteria.CategoryIds.Contains(e.Categoryid.Value));
         }
