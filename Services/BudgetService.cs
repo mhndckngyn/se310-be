@@ -25,7 +25,7 @@ public class BudgetService : IBudgetService
         return budget;
     }
 
-    public Budget CreateBudget(BudgetCreateDto budgetInfo)
+    public Budget CreateBudget(int userId, BudgetCreateDto budgetInfo)
     {
         var budget = new Budget
         {
@@ -35,7 +35,7 @@ public class BudgetService : IBudgetService
             Period = budgetInfo.Period,
             Budgetlimit = budgetInfo.BudgetLimit,
             Categoryid = budgetInfo.CategoryId,
-            Userid = budgetInfo.UserId
+            Userid = userId
         };
         _context.Budgets.Add(budget);
         _context.SaveChanges();

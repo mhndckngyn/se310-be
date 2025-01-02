@@ -55,8 +55,7 @@ public class BudgetController : ControllerBase
             return Unauthorized();
         }
         
-        budgetInfo.UserId = userId;
-        var budget = _budgetService.CreateBudget(budgetInfo);
+        var budget = _budgetService.CreateBudget(userId, budgetInfo);
         return CreatedAtAction(nameof(GetBudget), new { id = budget.Id }, budget);
     }
 
