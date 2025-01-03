@@ -32,6 +32,20 @@ public class BudgetController : ControllerBase
     }
 
     [Authorize]
+    [HttpGet("category/{categoryId:int}")]
+    public IActionResult GetBudgetsByCategory([FromRoute] int categoryId)
+    {
+        var claimUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!int.TryParse(claimUserId, out var userId))
+        {
+            return Unauthorized();
+        }
+        
+        var budgets = _budgetService.GetListBudgetByUser(userId, categoryId);
+        return Ok(budgets);
+    }
+
+    [Authorize]
     [HttpGet]
     public IActionResult GetBudgets()
     {
@@ -41,7 +55,7 @@ public class BudgetController : ControllerBase
             return Unauthorized();
         }
         
-        var budgets = _budgetService.GetListBudgetByUser(userId);
+        var budgets = _budgetService.GetListBudgetByUser(userId, null);
         return Ok(budgets);
     }
 

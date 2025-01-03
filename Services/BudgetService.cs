@@ -42,7 +42,7 @@ public class BudgetService : IBudgetService
         return budget;
     }
     
-    public List<BudgetDto> GetListBudgetByUser(int userId)
+    public List<BudgetDto> GetListBudgetByUser(int userId, int? categoryId)
     {
         var budgets = _context.Budgets.Where(b => b.Userid == userId)
             .Select(b => new BudgetDto
@@ -56,6 +56,11 @@ public class BudgetService : IBudgetService
             }).ToList();
         
         return budgets;
+    }
+
+    public List<BudgetDto> GetListBudgetByCategory(int userId, int categoryId)
+    {
+        throw new NotImplementedException();
     }
 
     public Budget? UpdateBudget(int id, BudgetUpdateDto budgetInfo)
