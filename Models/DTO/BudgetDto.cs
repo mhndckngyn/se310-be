@@ -8,4 +8,6 @@ public record BudgetDto
     public DateOnly EndDate { get; init; }
     public decimal Current { get; init; }
     public decimal BudgetLimit { get; init; }
+    
+    public int? CategoryId { get; init; }
 }

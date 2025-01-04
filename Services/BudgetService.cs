@@ -18,7 +18,8 @@ public class BudgetService : IBudgetService
                 StartDate = a.Startdate,
                 EndDate = a.Enddate,
                 Current = a.Current,
-                BudgetLimit = a.Budgetlimit
+                BudgetLimit = a.Budgetlimit,
+                CategoryId = a.Categoryid
             })
             .FirstOrDefault();
         
@@ -52,7 +53,8 @@ public class BudgetService : IBudgetService
                 StartDate = b.Startdate,
                 EndDate = b.Enddate,
                 Current = b.Current,
-                BudgetLimit = b.Budgetlimit
+                BudgetLimit = b.Budgetlimit,
+                CategoryId = b.Categoryid
             }).ToList();
         
         return budgets;
